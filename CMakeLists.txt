@@ -21,7 +21,12 @@ catkin_package(CATKIN_DEPENDS
   message_runtime
 )
 
+find_package(libdynamixel_ros QUIET)
+
 # Searching for libdynamixel
+if (${libdynamixel_ros_FOUND})
+  include_directories(${libdynamixel_ros_INCLUDE_DIRS})
+else()
 if ("$ENV{RESIBOTS_DIR}" STREQUAL "" AND "${LIBDYNAMIXEL}" STREQUAL "")
   message("Using default location for libdynamixel : ~")
   set(libdynamixel_dir "~")
@@ -37,9 +42,11 @@ if (NOT (EXISTS "${libdynamixel_dir}/include/dynamixel/"))
   message(FATAL_ERROR "libdynamixel was not found!")
 endif()
 
+include_directories("${libdynamixel_dir}/include")
+endif()
+
 include_directories(
   ${catkin_INCLUDE_DIRS}
-  "${libdynamixel_dir}/include"
   include
 )
 
